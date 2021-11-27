@@ -54,16 +54,16 @@ public class eleve extends JFrame
         sexe.add(radio1);
         sexe.add(radio2);
 		
-		panNom.setBorder( BorderFactory. createTitledBorder( "Information d'elève : ") ) ;
-		numele = new JLabel( "Numero d'elève : ") ;
+		panNom.setBorder( BorderFactory. createTitledBorder( "Information d'elÃ¨ve : ") ) ;
+		numele = new JLabel( "Numero d'elÃ¨ve : ") ;
 		numele.setPreferredSize(new Dimension( 150, 25));
 		panNom.add(numele);
 		panNom.add(numeleve);
-		nomLabel = new JLabel("Nom d'elève :    ") ;
+		nomLabel = new JLabel("Nom d'elÃ¨ve :    ") ;
 		nomLabel.setPreferredSize(new Dimension( 150, 25));
 		panNom. add( nomLabel) ;
 		panNom. add( nom) ;
-		prenoml = new JLabel("Prenom d'elève");
+		prenoml = new JLabel("Prenom d'elÃ¨ve");
 		prenoml.setPreferredSize(new Dimension( 150, 25));
 		panNom.add(prenoml);
 		panNom.add(prenom);
@@ -103,7 +103,7 @@ public class eleve extends JFrame
 				if(res!=0){
 					 //state.execute(requete);
 						setVisible( false) ;
-						JOptionPane.showMessageDialog(null, "Eneregistrement ajouté avec succès", "info", JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Eneregistrement ajoutÃ© avec succÃ¨s", "info", JOptionPane.INFORMATION_MESSAGE);
 						}
 					 //state.execute(requete);
 						setVisible( false) ;
@@ -113,13 +113,17 @@ public class eleve extends JFrame
 					JOptionPane.showMessageDialog(null, e.getMessage(), "info", JOptionPane.INFORMATION_MESSAGE);
 					e.printStackTrace();
 				}
-			 //On exécute la requête
+			 //On exÃ©cute la requÃªte
 			     
 			  }
 		});
 //aaaaaaaaaaaaaaaaaaaaaa
 //tttttttttttttt
+
+//jjjjjjjjjjjjjjjjjjjjjjjj
+
 //oooooooooooooooooooooooooooooo
+
 		b02 = new JButton();
 		b02.setText("Annuler");
 		b02.setPreferredSize(new Dimension( 100, 25));
