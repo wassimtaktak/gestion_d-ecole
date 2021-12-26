@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.awt.event.ActionEvent;
 import com.toedter.calendar.JDateChooser;
@@ -28,6 +29,7 @@ public class Enseignant extends JFrame
 	private JTable table;
 	public Enseignant() {
 		setSize(826,700);
+		int i;
 		getContentPane().setLayout(null);
 		this.setVisible(true);
 		JPanel panel = new JPanel();
@@ -36,6 +38,10 @@ public class Enseignant extends JFrame
 		getContentPane().add(panel);
 		panel.setBorder( BorderFactory. createTitledBorder( "Informations d'enseignant : ") ) ;
 		panel.setLayout(null);
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBounds(191, 377, 135, 25);
+		for(i=0;i<colmat().size();i++)
+		{comboBox.addItem(colmat().get(i));}
 		
 		id = new JTextField();
 		id.setBounds(125, 38, 162, 37);
@@ -98,7 +104,7 @@ public class Enseignant extends JFrame
 
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(410, 38, 353, 290);
+		scrollPane.setBounds(388, 38, 394, 290);
 		panel.add(scrollPane);
 		
 		table = new JTable();
@@ -107,6 +113,7 @@ public class Enseignant extends JFrame
 				try {  int i=table.getSelectedRow();
 	            deplace(i);
 	            String gender=table.getValueAt(i, 3).toString();
+	            comboBox.setSelectedItem(table.getValueAt (i,5).toString());
 	            if(gender.equals("Masculin"))
 	            		{
 	            		rdbtnNewRadioButton.setSelected(true);
@@ -115,7 +122,7 @@ public class Enseignant extends JFrame
 	            	rdbtnNewRadioButton_1.setSelected(true);
 	            }
 	            		
-	            dateChooser.setDate( new SimpleDateFormat("yyyy-MM-dd").parse(table.getValueAt (i, 4).toString()));
+	            dateChooser.setDate( new SimpleDateFormat("yyyy-MM-dd").parse(table.getValueAt (i,3).toString()));
 	            
 	        }
 	        catch (Exception e1){JOptionPane.showMessageDialog(null,"erreur selectionne\n"+e1.getMessage());          }
@@ -130,6 +137,8 @@ public class Enseignant extends JFrame
 				String num = id.getText();
 				String no = nom.getText() ;
 				String preno = prenom.getText();
+				String matiere=comboBox.getSelectedItem().toString();
+				String id_mat=idlib(matiere);
 				
 				java.util.Date date=dateChooser.getDate();
 				java.sql.Date sqldate = new java.sql.Date(date.getTime());
@@ -138,7 +147,7 @@ public class Enseignant extends JFrame
 					s="Masculin";
 				else 
 					s="Feminin";
-				String requete = "INSERT INTO enseignant VALUES ('"+num+"','"+no+"','"+preno+"','"+s+"','"+sqldate+"')";
+				String requete = "INSERT INTO enseignant VALUES ('"+num+"','"+no+"','"+preno+"','"+s+"','"+sqldate+"','"+id_mat+"')";
 			      Statement state;
 				try {
 					
@@ -147,7 +156,8 @@ public class Enseignant extends JFrame
 				if(res!=0){
 					 //state.execute(requete);
 						//setVisible( false) ;
-						JOptionPane.showMessageDialog(null, "Enseignant ajoutÃ© avec succÃ¨s", "info", JOptionPane.INFORMATION_MESSAGE);
+						affiche();
+						JOptionPane.showMessageDialog(null, "Enseignant ajouté avec succès", "info", JOptionPane.INFORMATION_MESSAGE);
 						}
 						//setVisible( false) ;
 						state.close();
@@ -158,7 +168,7 @@ public class Enseignant extends JFrame
 				
 			}
 		});
-		btnNewButton.setIcon(new ImageIcon("D:\\java\\eclipse\\developpement\\workspace\\gestion_d'ecole\\images\\nouveau.png"));
+		btnNewButton.setIcon(new ImageIcon(Enseignant.class.getResource("/img/nouveau.png")));
 		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnNewButton.setBounds(28, 444, 151, 37);
 		panel.add(btnNewButton);
@@ -174,6 +184,7 @@ public class Enseignant extends JFrame
 		         
 		            if(id.getText().length() != 0){
 		        stmn.executeUpdate("Delete From enseignant where id_ens = "+id.getText());
+		        affiche();
 		             }//ca est pour recharger la list des stagiaire
 		            else { JOptionPane.showMessageDialog(null,"veuillez remplire le champ id !");}
 		        
@@ -181,9 +192,9 @@ public class Enseignant extends JFrame
 		       
 			}
 		});
-		btnNewButton_1.setIcon(new ImageIcon("D:\\java\\eclipse\\developpement\\workspace\\gestion_d'ecole\\images\\supprimer.png"));
+		btnNewButton_1.setIcon(new ImageIcon(Enseignant.class.getResource("/img/supprimer.png")));
 		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnNewButton_1.setBounds(611, 444, 154, 37);
+		btnNewButton_1.setBounds(388, 444, 154, 37);
 		panel.add(btnNewButton_1);
 		
 		JButton btnNewButton_2 = new JButton("Modifier");
@@ -202,29 +213,35 @@ public class Enseignant extends JFrame
 		            if (JOptionPane.showConfirmDialog (null,"confirmer la modification","modification",
 		                    JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 
-		                stmn.executeUpdate("UPDATE enseignant SET Nom='"+nom.getText()+"',prenom='"+prenom.getText()+"',sexe='"+s+"',date='"+sqldate+
+		                stmn.executeUpdate("UPDATE enseignant SET Nom='"+nom.getText()+"',prenom='"+prenom.getText()+"',sexe='"+s+"',date='"+sqldate+"',id_mat='"+idlib(comboBox.getSelectedItem().toString())+
 		                        "' WHERE id_ens= "+id.getText());
-		                //afficher ();
+		                affiche ();
 		            } 
 		        } catch (Exception e1){JOptionPane.showMessageDialog(null,"erreur de modification!!!!!!!");
 		        System.err.println(e1);}
 			}
 		});
-		btnNewButton_2.setIcon(new ImageIcon("D:\\java\\eclipse\\developpement\\workspace\\gestion_d'ecole\\images\\modifier.gif"));
+		btnNewButton_2.setIcon(new ImageIcon(Enseignant.class.getResource("/img/modifier.gif")));
 		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnNewButton_2.setBounds(227, 444, 151, 37);
+		btnNewButton_2.setBounds(202, 444, 151, 37);
 		panel.add(btnNewButton_2);
+		panel.add(comboBox);
 		
-		JButton btnNewButton_3 = new JButton("actualiser");
-		btnNewButton_3.addActionListener(new ActionListener() {
+		JLabel lblNewLabel_5 = new JLabel("matiere");
+		lblNewLabel_5.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblNewLabel_5.setBounds(39, 368, 103, 35);
+		panel.add(lblNewLabel_5);
+		
+		JButton btnNewButton_4 = new JButton("Quitter");
+		btnNewButton_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				affiche();
+				dispose();
 			}
 		});
-		btnNewButton_3.setIcon(new ImageIcon("D:\\java\\eclipse\\developpement\\workspace\\gestion_d'ecole\\images\\modifier.png"));
-		btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnNewButton_3.setBounds(445, 444, 143, 37);
-		panel.add(btnNewButton_3);
+		btnNewButton_4.setIcon(new ImageIcon(Enseignant.class.getResource("/img/sortie.gif")));
+		btnNewButton_4.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnNewButton_4.setBounds(570, 444, 154, 37);
+		panel.add(btnNewButton_4);
 		affiche();
 		
 		
@@ -233,7 +250,7 @@ public class Enseignant extends JFrame
 	public void affiche ()
 	{
 		try {
-			String requete ="select * from enseignant";
+			String requete ="SELECT enseignant.id_ens, enseignant.nom, enseignant.prenom,enseignant.date,enseignant.sexe,matiere.libelle FROM `matiere`,`enseignant` WHERE matiere.id_mat=enseignant.id_mat";
 			PreparedStatement  ps =connexion.getconnect().prepareStatement(requete);
 			ResultSet res=ps.executeQuery();
 			table.setModel(DbUtils.resultSetToTableModel(res));
@@ -243,7 +260,8 @@ public class Enseignant extends JFrame
 		
 	}
 
-    private void deplace(int i){
+    private void deplace(int i)
+    {
        try {     //i represente les ligne 
      
          id.setText(table.getValueAt (i, 0).toString());
@@ -252,8 +270,42 @@ public class Enseignant extends JFrame
         // txtb.setSelectedItem(dt.getValueAt (i, 2).toString());
          prenom.setText(table.getValueAt (i, 2).toString());
          
+         
       
        
        }catch (Exception e){ JOptionPane.showMessageDialog(null,"erreur de deplacement de message !!!!! "+e.getMessage());}
       }
-}
+    public ArrayList colmat()
+	{
+		String query = " select libelle from matiere  ";
+		ArrayList<String> list = new ArrayList<String>();
+
+		try {
+			Statement state  =connexion.getconnect().createStatement();
+			ResultSet res =state.executeQuery(query);
+			while (res.next())
+			{
+				list.add(res.getString("libelle"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return  list;
+	}
+    public String idlib(String s)
+	{
+		String query = " SELECT `id_mat` FROM `matiere` WHERE matiere.libelle='"+s+"' ";
+		ArrayList<String> list = new ArrayList<String>();
+
+		try {
+			Statement state  =connexion.getconnect().createStatement();
+			ResultSet res =state.executeQuery(query);
+			while (res.next())
+			{
+				list.add(res.getString("id_mat"));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}return list.get(0);
+}}
